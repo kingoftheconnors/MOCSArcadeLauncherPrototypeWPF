@@ -61,10 +61,6 @@
                 <TextBox Text="{Binding PathToGameDirectory, Mode=TwoWay}"/>
             </StackPanel>
             <StackPanel>
-                <TextBlock Foreground="LawnGreen">PathToUpdaterDirectory:</TextBlock>
-                <TextBox Text="{Binding PathToUpdaterDirectory}"/>
-            </StackPanel>
-            <StackPanel>
                 <TextBlock Foreground="LawnGreen">PathToFocuserDirectory:</TextBlock>
                 <TextBox Text="{Binding PathToFocuserDirectory}"/>
             </StackPanel>

@@ -28,7 +28,6 @@ namespace MocsArcadeLauncher
     {
         public MainWindow()
         {
-            StartHelperProcesses();
             InitializeComponent();
 
             Loaded += OnLoaded_SelectFirstListBoxItem;
@@ -51,18 +50,6 @@ namespace MocsArcadeLauncher
             }
         }
 
-        private Process _Updater;
-        public Process Updater 
-        {
-            get
-            {
-                return _Updater??(_Updater = InitializeUpdater());
-            }
-            set
-            {
-                _Updater = value;
-            }
-        }
         private Process _Focuser;
         public Process Focuser
         {
@@ -162,36 +149,6 @@ namespace MocsArcadeLauncher
             }
 
         }
-        private void StartHelperProcesses()
-        {
-            Updater.Start();
-            Updater.WaitForExit();
-        }
-
-        private Process InitializeUpdater()
-        {
-            var process = new Process();
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.LoadUserProfile = true;
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.FileName = "powershell";
-            process.StartInfo.WorkingDirectory = Properties.Settings.Default.UpdaterExecPath;
-
-            process.StartInfo.Arguments = "-ExecutionPolicy Unrestricted .\\Main.exe  \"" + Properties.Settings.Default.GameRootDirectory +"\"";
-
-            return process;
-        }
-
-        private void UpdateGame(string gameName)
-        {
-            StopHelperProcesses();
-            var oneTimeUpdater = InitializeUpdater();
-            oneTimeUpdater.StartInfo.Arguments = "-ExecutionPolicy Unrestricted .\\Main.exe \"" + Properties.Settings.Default.GameRootDirectory + "\" \"" + gameName + "\"";
-            oneTimeUpdater.Start();
-            oneTimeUpdater.WaitForExit();
-            Updater.Start();
-        }
 
         private Process InitializeFocuser()
         {
@@ -211,7 +168,6 @@ namespace MocsArcadeLauncher
             try
             {
                 Focuser.Kill();
-                Updater.Kill();
             }
             catch(Exception err)
             {

@@ -76,19 +76,6 @@ namespace MocsArcadeLauncher.ViewModel
                 RaisePropertyChanged();
             }
         }
-        private string _PathToUpdaterDirectory;
-        public string PathToUpdaterDirectory
-        {
-            get
-            {
-                return _PathToUpdaterDirectory;
-            }
-            set
-            {
-                _PathToUpdaterDirectory = value;
-                RaisePropertyChanged();
-            }
-        }
         private string _PathToFocuserDirectory;
         public string PathToFocuserDirectory
         {
@@ -158,7 +145,6 @@ namespace MocsArcadeLauncher.ViewModel
         {
             PathToGameDirectory = Properties.Settings.Default.GameRootDirectory;
             PathToFocuserDirectory = Properties.Settings.Default.FocusExecPath;
-            PathToUpdaterDirectory = Properties.Settings.Default.UpdaterExecPath;
         }
 
         #endregion
@@ -171,7 +157,6 @@ namespace MocsArcadeLauncher.ViewModel
             get
             {
                 return _SaveSettingsCommand ?? (_SaveSettingsCommand = new RelayCommand(() => {
-                    Properties.Settings.Default.UpdaterExecPath = PathToUpdaterDirectory;
                     Properties.Settings.Default.GameRootDirectory = PathToGameDirectory;
                     Properties.Settings.Default.FocusExecPath = PathToFocuserDirectory;
                     Properties.Settings.Default.Save();
