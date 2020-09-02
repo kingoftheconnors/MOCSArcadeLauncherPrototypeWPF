@@ -1,0 +1,18 @@
+Themes: Intutive UI, Robust Execution, and Virtual (can be generically run separate from arcade) are guiding principles for this project's design
+Initiatives: Launcher and API are separate projects
+
+
+
+**The Launcher Project**:
+Connor: Autohotkey
+  Regularly checks for a MocsArcade_* process to focus on. If no game is open, focus on the launcher. If there is no launcher, open a new launcher
+  If two games are open, the game that was opened first (which the autohotkey program has set as the "active game") will be kept open and the other will be closed
+  The first time a game is sensed to be open, read the config file in the game folder to change the keybinds for the player to fit the game
+  The autohotkey will have a special "kill all" button that closes all games and reopens the launcher
+
+Andrew: Launcher
+  Runs a UI for the player to select a game. There are two buttons: SELECT, and INFO
+  The launcher will open a game as a separate process and then close itself
+  The launcher may have an "arcade mode" if necessary
+  The launcher will have a keybind-config file similar to regular games
+  The stylish UI will be the hardest thing to make
