@@ -1,6 +1,0 @@
-Up    -> w
-Down  -> s
-Left  -> a
-Right -> d
-A     -> f
-B     -> t
