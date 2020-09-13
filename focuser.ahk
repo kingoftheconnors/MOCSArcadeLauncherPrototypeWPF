@@ -10,28 +10,31 @@ counter := new FocusTimer
 ; -----------------
 ; P1
 ; ---------------------------
-EnvSet, P1upKey, {Up}
-EnvSet, P1leftKey, {Left}
-EnvSet, P1rightKey, {Right}
-EnvSet, P1downKey, {Down}
-EnvSet, P1aKey, {j}
-EnvSet, P1bKey, {i}
-EnvSet, P1xKey, {k}
-EnvSet, P1yKey, {l}
-EnvSet, P1zKey, {o}
+EnvSet, P1upKey, Up
+EnvSet, P1leftKey, Left
+EnvSet, P1rightKey, Right
+EnvSet, P1downKey, Down
+EnvSet, P1aKey, j
+EnvSet, P1bKey, i
+EnvSet, P1xKey, k
+EnvSet, P1yKey, l
+EnvSet, P1zKey, o
 
 ; -----------------
 ; P2
 ; ---------------------------
-EnvSet, P2upKey, {w}
-EnvSet, P2leftKey, {a}
-EnvSet, P2rightKey, {d}
-EnvSet, P2downKey, {s}
-EnvSet, P2aKey, {f}
-EnvSet, P2bKey, {t}
-EnvSet, P2xKey, {t}
-EnvSet, P2yKey, {h}
-EnvSet, P2zKey, {y}
+EnvSet, P2upKey, w
+EnvSet, P2leftKey, a
+EnvSet, P2rightKey, d
+EnvSet, P2downKey, s
+EnvSet, P2aKey, f
+EnvSet, P2bKey, t
+EnvSet, P2xKey, t
+EnvSet, P2yKey, h
+EnvSet, P2zKey, y
+
+EnvSet, enterKey, Enter
+EnvSet, escKey, Esc
 
 ; An example class for counting the seconds...
 class FocusTimer {
@@ -185,6 +188,9 @@ ConfigNewGame(gameTitle) {
             case "P2X":       EnvSet, P2xKey, %mapKey%
             case "P2Y":       EnvSet, P2yKey, %mapKey%
             case "P2Z":       EnvSet, P2zKey, %mapKey%
+            
+            case "Enter":       EnvSet, enterKey, %mapKey%
+            case "Escape":       EnvSet, escKey, %mapKey%
         }
     }
 }
@@ -205,115 +211,227 @@ return
 counter.Stop()
 return
 
-Esc & Enter::
-KillAllGames(titleDict)
+~Esc & ~Enter::
+KillAllGames(counter.titleDict)
 return
 
 $Up::
     sendUp() {
-        EnvGet, upVar, P1upKey
-        Send %upVar%
+        EnvGet, keyVar, P1upKey
+        Send {%keyVar% down}
+    }
+$Up UP::
+    releaseUp() {
+        EnvGet, keyVar, P1upKey
+        Send, {%keyVar% up}
     }
 
 $Left::
     sendLeft() {
-        EnvGet, leftVar, P1leftKey
-        Send %leftVar%
+        EnvGet, keyVar, P1leftKey
+        Send {%keyVar% down}
+    }
+$Left UP::
+    releaseLeft() {
+        EnvGet, keyVar, P1leftKey
+        Send, {%keyVar% up}
     }
 
 $Right::
     sendRight() {
-        EnvGet, rightVar, P1rightKey
-        Send %rightVar%
+        EnvGet, keyVar, P1rightKey
+        Send, {%keyVar% down}
+    }
+$Right UP::
+    releaseRight() {
+        EnvGet, keyVar, P1rightKey
+        Send, {%keyVar% up}
     }
 
 $Down::
     sendDown() {
-        EnvGet, downVar, P1downKey
-        Send %downVar%
+        EnvGet, keyVar, P1downKey
+        Send, {%keyVar% down}
+    }
+$Down UP::
+    releaseDown() {
+        EnvGet, keyVar, P1downKey
+        Send, {%keyVar% up}
     }
 
 $1::
     sendA() {
-        EnvGet, aVar, P1aKey
-        Send %aVar%
+        EnvGet, keyVar, P1aKey
+        Send, {%keyVar% down}
+    }
+$1 UP::
+    releaseA() {
+        EnvGet, keyVar, P1aKey
+        Send, {%keyVar% up}
     }
 
 $2::
     sendB() {
-        EnvGet, bVar, P1bKey
-        Send %bVar%
+        EnvGet, keyVar, P1bKey
+        Send, {%keyVar% down}
+    }
+$2 UP::
+    releaseB() {
+        EnvGet, keyVar, P1bKey
+        Send, {%keyVar% up}
     }
 
 $3::
     sendX() {
-        EnvGet, xVar, P1xKey
-        Send %xVar%
+        EnvGet, keyVar, P1xKey
+        Send, {%keyVar% down}
+    }
+$3 UP::
+    releaseX() {
+        EnvGet, keyVar, P1bKey
+        Send, {%keyVar% up}
     }
 
 $4::
     sendY() {
-        EnvGet, yVar, P1yKey
-        Send %yVar%
+        EnvGet, keyVar, P1yKey
+        Send, {%keyVar% down}
+    }
+$4 UP::
+    releaseY() {
+        EnvGet, keyVar, P1yKey
+        Send, {%keyVar% up}
     }
 
 $5::
     sendZ() {
-        EnvGet, zVar, P1zKey
-        Send %zVar%
+        EnvGet, keyVar, P1zKey
+        Send, {%keyVar% down}
+    }
+$5 UP::
+    releaseZ() {
+        EnvGet, keyVar, P1zKey
+        Send, {%keyVar% up}
     }
 
 
 $w::
     P2sendUp() {
-        EnvGet, upVar, P2upKey
-        Send %upVar%
+        EnvGet, keyVar, P2upKey
+        Send, {%keyVar% down}
+    }
+$w UP::
+    P2releaseUp() {
+        EnvGet, keyVar, P2upKey
+        Send, {%keyVar% up}
     }
 
 $a::
     P2sendLeft() {
-        EnvGet, leftVar, P2leftKey
-        Send %leftVar%
+        EnvGet, keyVar, P2leftKey
+        Send, {%keyVar% down}
+    }
+$a UP::
+    P2releaseLeft() {
+        EnvGet, keyVar, P2leftKey
+        Send, {%keyVar% up}
     }
 
 $d::
     P2sendRight() {
-        EnvGet, rightVar, P2rightKey
-        Send %rightVar%
+        EnvGet, keyVar, P2rightKey
+        Send, {%keyVar% down}
+    }
+$d UP::
+    P2releaseRight() {
+        EnvGet, keyVar, P2rightKey
+        Send, {%keyVar% up}
     }
 
 $s::
     P2sendDown() {
-        EnvGet, downVar, P2downKey
-        Send %downVar%
+        EnvGet, keyVar, P2downKey
+        Send, {%keyVar% down}
+    }
+$s UP::
+    P2releaseDown() {
+        EnvGet, keyVar, P2downKey
+        Send, {%keyVar% up}
     }
 
 $f::
     P2sendA() {
-        EnvGet, aVar, P2aKey
-        Send %aVar%
+        EnvGet, keyVar, P2aKey
+        Send, {%keyVar% down}
+    }
+$f UP::
+    P2releaseA() {
+        EnvGet, keyVar, P2aKey
+        Send, {%keyVar% up}
     }
 
 $t::
     P2sendB() {
-        EnvGet, bVar, P2bKey
-        Send %bVar%
+        EnvGet, keyVar, P2bKey
+        Send, {%keyVar% down}
+    }
+$t UP::
+    P2releaseB() {
+        EnvGet, keyVar, P2bKey
+        Send, {%keyVar% up}
     }
 
 $g::
     P2sendX() {
-        EnvGet, xVar, P2xKey
-        Send %xVar%
+        EnvGet, keyVar, P2xKey
+        Send, {%keyVar% down}
+    }
+$g UP::
+    P2releaseX() {
+        EnvGet, keyVar, P2xKey
+        Send, {%keyVar% up}
     }
 
 $h::
     P2sendY() {
-        EnvGet, yVar, P2yKey
-        Send %yVar%
+        EnvGet, keyVar, P2yKey
+        Send, {%keyVar% down}
+    }
+$h UP::
+    P2releaseY() {
+        EnvGet, keyVar, P2yKey
+        Send, {%keyVar% up}
     }
 
 $y::
     P2sendZ() {
-        EnvGet, zVar, P2zKey
-        Send %zVar%
+        EnvGet, keyVar, P2zKey
+        Send, {%keyVar% down}
+    }
+$y UP::
+    P2releaseZ() {
+        EnvGet, keyVar, P2zKey
+        Send, {%keyVar% up}
+    }
+    
+$Enter::
+    sendEnter() {
+        EnvGet, keyVar, enterKey
+        Send, {%keyVar% down}
+    }
+$Enter UP::
+    releaseEnter() {
+        EnvGet, keyVar, enterKey
+        Send, {%keyVar% up}
+    }
+    
+$Esc::
+    sendEsc() {
+        EnvGet, keyVar, escKey
+        Send, {%keyVar% down}
+    }
+$Esc UP::
+    releaseEsc() {
+        EnvGet, keyVar, escKey
+        Send, {%keyVar% up}
     }
