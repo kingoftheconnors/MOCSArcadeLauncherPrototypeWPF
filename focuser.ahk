@@ -77,7 +77,10 @@ class FocusTimer {
         local gameTitle = FindOpenGameTitle(this.titleDict, this.currentlyOpenGame)
         ; Periodically focusing on open game
         ;; SetTitleMatchMode RegEx
-        if (WinExist(gameTitle)) {
+        SetTitleMatchMode 3
+        if (gameTitle == "")
+            Restart_Launcher(titleDict) ; If the return is an empty string, open launcher
+        else if (WinExist(gameTitle)) {
             WinActivate
             ; Starting new game
             if (gameTitle != this.currentlyOpenGame) {
@@ -86,31 +89,69 @@ class FocusTimer {
                 ConfigNewGame(gameTitle)
             }
         }
-        else if (gameTitle != "") ; If the game title returned doesn't exist, clean restart
-            KillAllGames(this.titleDict)
         else
-            Restart_Launcher(titleDict) ; If the return is an empty string, open launcher
+            KillAllGames(this.titleDict) ; If the game title returned doesn't exist, clean restart
     }
 }
 
 ; Goes through titleDict and checks if any games with those titles are open
 FindOpenGameTitle(titleDict, currentlyOpenGame) {
     
-    SetTitleMatchMode RegEx
-    ; TODO: return open game based on titleDict
+    local gameTitle = 0
+    local numGamesFound = 0
 
-    ; TODO: Test for more than one currently open game
-    ;if (numGames > 1) {
-        ; TODO: Search again excluding currently open game and close all others
-        ; WinClose
-    ;} else {
+    ; Find all open games
+    for key, value in titleDict
+    {
+        SetTitleMatchMode 3
+        if (WinExist(value)) {
+            local foundVar
+            WinGetTitle, foundVar
+            OutputDebug, % "Found game " value foundVar
+            gameTitle := value
+            numGamesFound++
+        }
+    }
+
+    OutputDebug, % "Num games " numGamesFound
+    if(numGamesFound > 1)
+    {
+        OutputDebug, % "Decreasing number of games " gameTitle
+        ; Close all but one game, giving precedence to the NOT currently open game
+        SetTitleMatchMode 3
+        if WinExist(currentlyOpenGame) {
+            WinClose
+            numGamesFound--
+        }
+        for key, value in titleDict
+        {
+            if (WinExist(value) && numGamesFound > 1) {
+                WinClose
+                numGamesFound--
+            }
+            ; Finally, change the game title to the remaining open game
+            if (WinExist(value) && numGamesFound == 1) {
+                gameTitle := value
+            }
+        }
+    }
+    else if(numGamesFound == 1)
+    {
+        OutputDebug, % "Returning " gameTitle
+        return gameTitle
+    }
+    else
+    {
+        OutputDebug, % "Returning blank"
+        return ""
+    }
 }
 
 Restart_Launcher(titleDict) {
     OutputDebug, % "Run the launcher"
     ; TODO: Open launcher
 
-    ConfigNewGame("Launcher")
+    ; ConfigNewGame("Launcher")
 }
 
 ConfigNewGame(gameTitle) {
@@ -150,14 +191,7 @@ ConfigNewGame(gameTitle) {
 
 KillAllGames(titleDict) {
     ; TODO: Kill all games using dictionary
-    SetTitleMatchMode RegEx
-	While, WinExist(gameIdentifier)
-	{
-        WinClose
-	}
-    if WinExist(launcherName)
-        WinActivate
-	
+    OutputDebug, % "Killing games"
     Restart_Launcher(titleDict)
 }
 
@@ -175,111 +209,111 @@ Esc & Enter::
 KillAllGames(titleDict)
 return
 
-Up::
+$Up::
     sendUp() {
-        EnvGet, upVar, upKey
-        Send %P1upVar%
+        EnvGet, upVar, P1upKey
+        Send %upVar%
     }
 
-Left::
+$Left::
     sendLeft() {
-        EnvGet, leftVar, leftKey
-        Send %P1leftVar%
+        EnvGet, leftVar, P1leftKey
+        Send %leftVar%
     }
 
-Right::
+$Right::
     sendRight() {
-        EnvGet, rightVar, rightKey
-        Send %P1rightVar%
+        EnvGet, rightVar, P1rightKey
+        Send %rightVar%
     }
 
-Down::
+$Down::
     sendDown() {
-        EnvGet, downVar, downKey
-        Send %P1downVar%
+        EnvGet, downVar, P1downKey
+        Send %downVar%
     }
 
-1::
+$1::
     sendA() {
-        EnvGet, aVar, aKey
-        Send %P1aVar%
+        EnvGet, aVar, P1aKey
+        Send %aVar%
     }
 
-2::
+$2::
     sendB() {
-        EnvGet, bVar, bKey
-        Send %P1bVar%
+        EnvGet, bVar, P1bKey
+        Send %bVar%
     }
 
-3::
+$3::
     sendX() {
-        EnvGet, bVar, bKey
-        Send %P1xVar%
+        EnvGet, xVar, P1xKey
+        Send %xVar%
     }
 
-4::
+$4::
     sendY() {
-        EnvGet, bVar, bKey
-        Send %P1yVar%
+        EnvGet, yVar, P1yKey
+        Send %yVar%
     }
 
-5::
+$5::
     sendZ() {
-        EnvGet, bVar, bKey
-        Send %P1zVar%
+        EnvGet, zVar, P1zKey
+        Send %zVar%
     }
 
 
-w::
+$w::
     P2sendUp() {
-        EnvGet, upVar, upKey
-        Send %P2upVar%
+        EnvGet, upVar, P2upKey
+        Send %upVar%
     }
 
-a::
+$a::
     P2sendLeft() {
-        EnvGet, leftVar, leftKey
-        Send %P2leftVar%
+        EnvGet, leftVar, P2leftKey
+        Send %leftVar%
     }
 
-d::
+$d::
     P2sendRight() {
-        EnvGet, rightVar, rightKey
-        Send %P2rightVar%
+        EnvGet, rightVar, P2rightKey
+        Send %rightVar%
     }
 
-s::
+$s::
     P2sendDown() {
-        EnvGet, downVar, downKey
-        Send %P2downVar%
+        EnvGet, downVar, P2downKey
+        Send %downVar%
     }
 
-f::
+$f::
     P2sendA() {
-        EnvGet, aVar, aKey
-        Send %P2aVar%
+        EnvGet, aVar, P2aKey
+        Send %aVar%
     }
 
-t::
+$t::
     P2sendB() {
-        EnvGet, bVar, bKey
-        Send %P2bVar%
+        EnvGet, bVar, P2bKey
+        Send %bVar%
     }
 
-g::
+$g::
     P2sendX() {
-        EnvGet, bVar, bKey
-        Send %P2xVar%
+        EnvGet, xVar, P2xKey
+        Send %xVar%
     }
 
-h::
+$h::
     P2sendY() {
-        EnvGet, bVar, bKey
-        Send %P2yVar%
+        EnvGet, yVar, P2yKey
+        Send %yVar%
     }
 
-y::
+$y::
     P2sendZ() {
-        EnvGet, bVar, bKey
-        Send %P2zVar%
+        EnvGet, zVar, P2zKey
+        Send %zVar%
     }
