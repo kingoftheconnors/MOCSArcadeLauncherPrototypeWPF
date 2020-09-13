@@ -1,12 +1,6 @@
 
 counter := new FocusTimer
 
-; TODO:
-; reading config of other files
-; reseting keybinds on close
-; reading filetitles from config
-; starting by default
-
 ; -----------------
 ; P1
 ; ---------------------------
@@ -159,7 +153,6 @@ Restart_Launcher(titleDict) {
 }
 
 ConfigNewGame(titleDict, gameTitle) {
-    ; TODO: Make andromeda's title actually work
     ; Get game NAME (of folder) from dictionary
     local gameName = ""
     for key, value in titleDict
@@ -203,8 +196,13 @@ ConfigNewGame(titleDict, gameTitle) {
 }
 
 KillAllGames(titleDict) {
-    ; TODO: Kill all games using dictionary
-    OutputDebug, % "Killing games"
+    ; Kill all games using dictionary
+    for key, value in titleDict
+    {
+        if (WinExist(value)) {
+            WinClose
+        }
+    }
     Restart_Launcher(titleDict)
 }
 
