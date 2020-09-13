@@ -33,6 +33,9 @@ EnvSet, P2xKey, t
 EnvSet, P2yKey, h
 EnvSet, P2zKey, y
 
+; -----------------
+; Basic traversal buttons (two black buttons)
+; ---------------------------
 EnvSet, enterKey, Enter
 EnvSet, escKey, Esc
 
@@ -54,6 +57,7 @@ class FocusTimer {
         OutputDebug, % "Counter started"
         
         ; Read files and fill titleDict
+        FileEncoding, UTF-8
         Loop, Files, %A_ScriptDir%\MOCSArcadeGames\*, D
         {
             Loop, Read, MOCSArcadeGames/%A_LoopFileName%/config.txt
@@ -86,10 +90,12 @@ class FocusTimer {
         else if (WinExist(gameTitle)) {
             WinActivate
             ; Starting new game
+            OutputDebug, % "Comparing " gameTitle " and " this.currentlyOpenGame
             if (gameTitle != this.currentlyOpenGame) {
                 this.currentlyOpenGame := gameTitle
                 ; Open config and set keybinds
-                ConfigNewGame(gameTitle)
+                OutputDebug, % "Changing config"
+                ConfigNewGame(this.titleDict, gameTitle)
             }
         }
         else
@@ -110,16 +116,13 @@ FindOpenGameTitle(titleDict, currentlyOpenGame) {
         if (WinExist(value)) {
             local foundVar
             WinGetTitle, foundVar
-            OutputDebug, % "Found game " value foundVar
             gameTitle := value
             numGamesFound++
         }
     }
 
-    OutputDebug, % "Num games " numGamesFound
     if(numGamesFound > 1)
     {
-        OutputDebug, % "Decreasing number of games " gameTitle
         ; Close all but one game, giving precedence to the NOT currently open game
         SetTitleMatchMode 3
         if WinExist(currentlyOpenGame) {
@@ -140,12 +143,10 @@ FindOpenGameTitle(titleDict, currentlyOpenGame) {
     }
     else if(numGamesFound == 1)
     {
-        OutputDebug, % "Returning " gameTitle
         return gameTitle
     }
     else
     {
-        OutputDebug, % "Returning blank"
         return ""
     }
 }
@@ -157,9 +158,15 @@ Restart_Launcher(titleDict) {
     ; ConfigNewGame("Launcher")
 }
 
-ConfigNewGame(gameTitle) {
-    ; TODO: Get game NAME (of folder) from dictionary
-    local gameName := "Cubix"
+ConfigNewGame(titleDict, gameTitle) {
+    ; TODO: Make andromeda's title actually work
+    ; Get game NAME (of folder) from dictionary
+    local gameName = ""
+    for key, value in titleDict
+    {
+        if(value == gameTitle)
+            gameName := key
+    }
 
     OutputDebug, % MOCSArcadeGames/%gameName%/config.txt
     Loop, Read, MOCSArcadeGames/%gameName%/config.txt
