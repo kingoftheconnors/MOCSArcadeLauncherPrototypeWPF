@@ -1,3 +1,4 @@
+#Include packages\AutohotkeyJSON\JSON.ahk
 
 counter := new FocusTimer
 
@@ -54,13 +55,14 @@ class FocusTimer {
         FileEncoding, UTF-8
         Loop, Files, %A_ScriptDir%\MOCSArcadeGames\*, D
         {
-            Loop, Read, MOCSArcadeGames/%A_LoopFileName%/config.txt
+            GetFile(A_LoopFileName)
+            keybinds := GetFile(gameName)
+            For Key, Value in keybinds
              {
-                configLine := StrSplit(A_LoopReadLine, "->", " `t")
-                switch configLine[1]
+                switch Key
                 {
                     case "title":
-                        this.titleDict[A_LoopFileName] := configLine[2]
+                        this.titleDict[A_LoopFileName] := Value
                 }
              }
         }
@@ -152,6 +154,20 @@ Restart_Launcher(titleDict) {
     ; ConfigNewGame("Launcher")
 }
 
+GetFile(gameName) {
+    if(FileExist("MOCSArcadeGames/" gameName "/config.json") == "")
+    {
+        req := ComObjCreate("Msxml2.XMLHTTP")
+        req.open("GET", "https://mocsarcade.herokuapp.com/user/Keybinds/Cubix", false)
+        req.send()
+        FileAppend, % req.responseText, MOCSArcadeGames/%gameName%/config.json
+    }
+    FileRead, keybinds_json, MOCSArcadeGames/%gameName%/config.json
+    keybinds := JSON.Load( keybinds_json )
+    
+    return keybinds
+}
+
 ConfigNewGame(titleDict, gameTitle) {
     ; Get game NAME (of folder) from dictionary
     local gameName = ""
@@ -160,37 +176,35 @@ ConfigNewGame(titleDict, gameTitle) {
         if(value == gameTitle)
             gameName := key
     }
-
-    OutputDebug, % MOCSArcadeGames/%gameName%/config.txt
-    Loop, Read, MOCSArcadeGames/%gameName%/config.txt
+    
+    keybinds := GetFile(gameName)
+    For Key, Value in keybinds
     {
-        OutputDebug, % A_LoopReadLine
-        Keybind := StrSplit(A_LoopReadLine, "->", " `t")
-        mapKey := Keybind[2]
-        switch Keybind[1]
+        OutputDebug, % Key . " -> " . Value
+        switch Key
         {
-            case "Up":      EnvSet, P1upKey, %mapKey%
-            case "Down":    EnvSet, P1downKey, %mapKey%
-            case "Left":    EnvSet, P1leftKey, %mapKey%
-            case "Right":   EnvSet, P1rightKey, %mapKey%
-            case "A":       EnvSet, P1aKey, %mapKey%
-            case "B":       EnvSet, P1bKey, %mapKey%
-            case "X":       EnvSet, P1xKey, %mapKey%
-            case "Y":       EnvSet, P1yKey, %mapKey%
-            case "Z":       EnvSet, P1zKey, %mapKey%
+            case "P1Up":      EnvSet, P1upKey, Value
+            case "P1Down":    EnvSet, P1downKey, Value
+            case "P1Left":    EnvSet, P1leftKey, Value
+            case "P1Right":   EnvSet, P1rightKey, Value
+            case "P1A":       EnvSet, P1aKey, Value
+            case "P1B":       EnvSet, P1bKey, Value
+            case "P1X":       EnvSet, P1xKey, Value
+            case "P1Y":       EnvSet, P1yKey, Value
+            case "P1Z":       EnvSet, P1zKey, Value
             
-            case "P2Up":      EnvSet, P2upKey, %mapKey%
-            case "P2Down":    EnvSet, P2downKey, %mapKey%
-            case "P2Left":    EnvSet, P2leftKey, %mapKey%
-            case "P2Right":   EnvSet, P2rightKey, %mapKey%
-            case "P2A":       EnvSet, P2aKey, %mapKey%
-            case "P2B":       EnvSet, P2bKey, %mapKey%
-            case "P2X":       EnvSet, P2xKey, %mapKey%
-            case "P2Y":       EnvSet, P2yKey, %mapKey%
-            case "P2Z":       EnvSet, P2zKey, %mapKey%
+            case "P2Up":      EnvSet, P2upKey, Value
+            case "P2Down":    EnvSet, P2downKey, Value
+            case "P2Left":    EnvSet, P2leftKey, Value
+            case "P2Right":   EnvSet, P2rightKey, Value
+            case "P2A":       EnvSet, P2aKey, Value
+            case "P2B":       EnvSet, P2bKey, Value
+            case "P2X":       EnvSet, P2xKey, Value
+            case "P2Y":       EnvSet, P2yKey, Value
+            case "P2Z":       EnvSet, P2zKey, Value
             
-            case "Enter":       EnvSet, enterKey, %mapKey%
-            case "Escape":       EnvSet, escKey, %mapKey%
+            case "Enter":       EnvSet, enterKey, Value
+            case "Escape":       EnvSet, escKey, Value
         }
     }
 }
